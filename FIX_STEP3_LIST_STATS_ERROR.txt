@@ -1,0 +1,1 @@
+Fixed Step 3 crash: train_standard_cv now excludes list-valued metrics such as confusion_matrix when writing history/cv summaries and computing means/stds.

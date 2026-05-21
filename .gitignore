@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+.idea/
+outputs/
+data_cache/
+*.pt
+*.pth
+*.ckpt
