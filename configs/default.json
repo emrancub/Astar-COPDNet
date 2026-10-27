@@ -1,0 +1,188 @@
+{
+  "seed": 42,
+  "internal_csv": "outputs/metadata/internal_metadata.csv",
+  "external_csv": "outputs/metadata/external_metadata_tr.csv",
+  "all_csv": "outputs/metadata/all_datasets_metadata.csv",
+  "output_dir": "outputs",
+  "dataset_build": {
+    "auto_build": true,
+    "internal_sources": [
+      "ICBHI",
+      "KAUH"
+    ],
+    "external_source": "TR",
+    "all_sources_for_blind_experiments": [
+      "ICBHI",
+      "KAUH",
+      "TR"
+    ],
+    "metadata_output_dir": "outputs/metadata",
+    "real_paths": {
+      "icbhi_root": "",
+      "icbhi_audio_dir": "",
+      "icbhi_demographic_txt": "",
+      "icbhi_filename_differences_txt": "",
+      "icbhi_filename_format_txt": "",
+      "icbhi_patient_diagnosis_csv": "",
+      "kauh_root": "",
+      "kauh_audio_dir": "",
+      "kauh_stethoscope_dir": "",
+      "kauh_annotation_xlsx": "",
+      "tr_root": "",
+      "tr_audio_dir": "",
+      "tr_labels_xlsx": ""
+    }
+  },
+  "audio": {
+    "sample_rate": 22050,
+    "duration_seconds": 5.0,
+    "n_mels": 128,
+    "n_fft": 2048,
+    "hop_length": 512,
+    "f_min": 50,
+    "f_max": 11000,
+    "normalize_waveform": true,
+    "normalize_spectrogram": true
+  },
+  "features": {
+    "handcrafted_sets": [
+      "mfcc_optimized",
+      "logmel_stats",
+      "phonation"
+    ],
+    "cache_dir": "outputs/feature_cache",
+    "use_opensmile_if_available": true,
+    "use_vggish_if_available": false
+  },
+  "augmentation": {
+    "enable_waveform_aug": true,
+    "enable_spec_aug": true,
+    "gaussian_noise_prob": 0.45,
+    "gain_prob": 0.3,
+    "shift_prob": 0.35,
+    "time_stretch_prob": 0.2,
+    "pitch_shift_prob": 0.2,
+    "time_mask_prob": 0.7,
+    "freq_mask_prob": 0.7
+  },
+  "training": {
+    "num_folds": 5,
+    "epochs": 50,
+    "batch_size": 10,
+    "num_workers": 4,
+    "learning_rate": 8e-05,
+    "weight_decay": 0.0001,
+    "patience": 10,
+    "mixed_precision": true,
+    "gradient_clip_norm": 1.0,
+    "use_cuda": true,
+    "early_stop_metric": "auc"
+  },
+  "model": {
+    "embed_dim": 192,
+    "handcrafted_dim": 256,
+    "projection_dim": 128,
+    "crnn_channels": [
+      32,
+      64,
+      128,
+      256
+    ],
+    "crnn_hidden": 128,
+    "crnn_layers": 2,
+    "domain_hidden_dim": 128,
+    "dropout": 0.3,
+    "grl_lambda": 1.0,
+    "pretrained_effnet": true
+  },
+  "loss": {
+    "lambda_supcon": 0.1,
+    "lambda_domain": 0.2,
+    "temperature": 0.07
+  },
+  "experiments": {
+    "standard_model_name": "hybrid_dg_respnet",
+    "classical_models": [
+      "logreg",
+      "svm_rbf",
+      "random_forest"
+    ],
+    "optimizer_candidates": [
+      "adam",
+      "adamw",
+      "rmsprop",
+      "sgd"
+    ],
+    "validation_strategies": [
+      "grouped_stratified_kfold",
+      "grouped_holdout"
+    ],
+    "feature_sets_for_benchmark": [
+      "mfcc_default",
+      "mfcc_optimized",
+      "lpcc",
+      "phonation",
+      "logmel_stats",
+      "egemaps"
+    ],
+    "blind_protocols": [
+      {
+        "train_sources": [
+          "ICBHI",
+          "KAUH"
+        ],
+        "test_source": "TR"
+      },
+      {
+        "train_sources": [
+          "ICBHI",
+          "TR"
+        ],
+        "test_source": "KAUH"
+      },
+      {
+        "train_sources": [
+          "KAUH",
+          "TR"
+        ],
+        "test_source": "ICBHI"
+      },
+      {
+        "train_sources": [
+          "ICBHI"
+        ],
+        "test_source": "KAUH"
+      },
+      {
+        "train_sources": [
+          "KAUH"
+        ],
+        "test_source": "ICBHI"
+      },
+      {
+        "train_sources": [
+          "TR"
+        ],
+        "test_source": "ICBHI"
+      },
+      {
+        "train_sources": [
+          "TR"
+        ],
+        "test_source": "KAUH"
+      }
+    ],
+    "deep_baselines": [
+      "spec_cnn",
+      "effnet_only",
+      "crnn_only",
+      "handcrafted_mlp",
+      "hybrid_dg_respnet"
+    ],
+    "selected_feature_triplet": [
+      "mfcc_optimized",
+      "logmel_stats",
+      "phonation"
+    ]
+  }
+}
